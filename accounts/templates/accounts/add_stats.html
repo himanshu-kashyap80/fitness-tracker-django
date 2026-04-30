@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Check-in</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* FORM */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 6px;
+            background: #1e293b;
+            color: white;
+        }
+
+        input:focus {
+            outline: 2px solid #00e5ff;
+        }
+
+        /* GRID (compact look) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* BUTTON */
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, #00e676, #00c853);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* INFO */
+        .info {
+            margin-bottom: 15px;
+            background: rgba(0,230,118,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        /* BACK */
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>📊 Daily Check-in</h2>
+        <p>Update your daily health stats</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card">
+
+        <!-- INFO -->
+        <div class="info">
+            💡 Keep your stats updated daily for better tracking & insights
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="grid">
+
+                <div>
+                    <label>Steps 🚶</label>
+                    {{ form.steps }}
+                </div>
+
+                <div>
+                    <label>Water (L) 💧</label>
+                    {{ form.water }}
+                </div>
+
+                <div>
+                    <label>Sleep (hrs) 😴</label>
+                    {{ form.sleep }}
+                </div>
+
+                <div>
+                    <label>Weight (kg) ⚖️</label>
+                    {{ form.weight }}
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn">Save Stats</button>
+        </form>
+
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

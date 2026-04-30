@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Food</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+
+        .main {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+        }
+
+        /* GRID */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* TEXT */
+        .stat-sub {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        /* PROGRESS */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar div {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #00e676);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        /* FLEX */
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* INPUT */
+        .input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            width: 260px;
+            background: #1e293b;
+            color: white;
+        }
+
+        /* BUTTON */
+        .btn {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* QUANTITY */
+        .qty {
+            width: 70px;
+            padding: 6px;
+            border-radius: 6px;
+            border: none;
+            background: #1e293b;
+            color: white;
+        }
+
+        /* TAG */
+        .tag {
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            margin-left: 6px;
+            background: #00e676;
+            color: black;
+        }
+
+        /* BACK */
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ff9800;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>Add Food 🍽️</h2>
+        <p>Track your nutrition smartly</p>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <!-- SMART SUGGESTION -->
+        <div class="card">
+            <h4>🧠 Smart Suggestion</h4>
+
+            {% if protein_remaining > 40 %}
+                <p>You need <b>{{ protein_remaining|floatformat:0 }}g protein</b> 💪</p>
+                <small>👉 chicken, paneer, eggs</small>
+
+            {% elif protein_remaining > 20 %}
+                <p>You need <b>{{ protein_remaining|floatformat:0 }}g protein</b></p>
+                <small>👉 eggs, dal, milk</small>
+
+            {% elif protein_remaining > 0 %}
+                <p>Only <b>{{ protein_remaining|floatformat:0 }}g protein</b> left 🔥</p>
+                <small>👉 curd, nuts</small>
+
+            {% else %}
+                <p style="color:#00e676;">✅ Protein goal achieved!</p>
+            {% endif %}
+        </div>
+
+        <!-- PROTEIN PROGRESS -->
+        <div class="card">
+            <h4>💪 Protein Progress</h4>
+
+            <div class="progress-bar">
+                <div style="width: {{ protein_progress }}%;"></div>
+            </div>
+
+            <p class="stat-sub">
+                {{ protein_progress|floatformat:0 }}% completed
+            </p>
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card" style="margin-top:15px;">
+        <form method="POST" id="searchForm" class="flex">
+            {% csrf_token %}
+
+            <input 
+                type="text" 
+                name="name" 
+                placeholder="Search food..."
+                value="{{ request.POST.name }}"
+                required
+                class="input"
+            >
+
+            <button type="submit" id="searchBtn" class="btn">
+                🔍 Search
+            </button>
+        </form>
+    </div>
+
+    <!-- RESULTS -->
+    {% if food_options %}
+    <div class="cards" style="margin-top:15px;">
+
+        {% for food in food_options %}
+        <form method="POST" class="card flex-between">
+            {% csrf_token %}
+
+            <input type="hidden" name="name" value="{{ food.name }}">
+            <input type="hidden" name="calories" value="{{ food.calories }}">
+            <input type="hidden" name="protein" value="{{ food.protein }}">
+            <input type="hidden" name="carbs" value="{{ food.carbs }}">
+            <input type="hidden" name="fats" value="{{ food.fats }}">
+
+            <div>
+                <strong>
+                    {{ food.name }}
+
+                    {% if forloop.first %}
+                        <span class="tag">⭐ Best</span>
+                    {% elif food.protein > 10 %}
+                        <span class="tag">🔥 High Protein</span>
+                    {% endif %}
+                </strong>
+
+                <p class="stat-sub">
+                    {{ food.calories }} kcal | Protein: {{ food.protein }}g
+                </p>
+            </div>
+
+            <div class="flex">
+                <input type="number" name="quantity" value="100" class="qty">
+
+                <button type="submit" class="btn">
+                    Add
+                </button>
+            </div>
+
+        </form>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+
+</div>
+
+<script>
+document.getElementById('searchForm').addEventListener('submit', function() {
+    const btn = document.getElementById('searchBtn');
+    btn.innerText = '⏳ Searching...';
+    btn.disabled = true;
+});
+</script>
+
+</body>
+</html>

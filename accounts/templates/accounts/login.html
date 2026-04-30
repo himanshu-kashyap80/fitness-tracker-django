@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fitness Login</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background images */
+.bg-img {
+    position: absolute;
+    opacity: 0.08;
+}
+
+.left-dumbbell {
+    left: 30px;
+    bottom: 40px;
+    width: 220px;
+}
+
+.right-fruit {
+    right: 40px;
+    top: 40px;
+    width: 180px;
+}
+
+/* CARD */
+.login-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    padding: 35px;
+    border-radius: 18px;
+    width: 350px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.login-card:hover {
+    transform: translateY(-3px);
+}
+
+/* TITLE */
+.title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.subtitle {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+/* INPUT */
+.input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #1e293b;
+    color: white;
+}
+
+.input:focus {
+    outline: 2px solid #ff9800;
+}
+
+/* BUTTON */
+.btn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* ERROR */
+.error {
+    background: rgba(255,0,0,0.15);
+    color: #ff6b6b;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* LINK */
+a {
+    color: #ff9800;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" class="bg-img left-dumbbell">
+<img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="bg-img right-fruit">
+
+<div class="login-card">
+
+    <div class="title">Fitness Tracker</div>
+    <div class="subtitle">Train hard. Stay strong.</div>
+
+    <!-- 🔴 ERROR MESSAGE -->
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="username" placeholder="Username" class="input" required>
+
+        <input type="password" name="password" placeholder="Password" class="input" required>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+
+    <div style="margin-top: 15px;">
+        <a href="{% url 'register' %}">Create Account</a>
+    </div>
+
+</div>
+
+</body>
+</html>

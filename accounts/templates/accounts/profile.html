@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* FORM */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 6px;
+            background: #1e293b;
+            color: white;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #00e5ff;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* BUTTON */
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, #00e5ff, #00b0ff);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* INFO */
+        .info {
+            margin-bottom: 15px;
+            background: rgba(0,229,255,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        /* NAV */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            color: #00e5ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- NAV -->
+    <div class="nav">
+        <a href="{% url 'dashboard' %}">⬅ Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>👤 Your Profile</h2>
+        <p>Manage your personal fitness information</p>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+
+        <!-- INFO -->
+        <div class="info">
+            💡 Your data helps personalize calorie calculations & recommendations
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="grid">
+
+                <div>
+                    <label>Age</label>
+                    {{ form.age }}
+                </div>
+
+                <div>
+                    <label>Weight (kg)</label>
+                    {{ form.weight }}
+                </div>
+
+                <div>
+                    <label>Height (cm)</label>
+                    {{ form.height }}
+                </div>
+
+                <div>
+                    <label>Goal</label>
+                    {{ form.goal }}
+                </div>
+
+                <div style="grid-column: span 2;">
+                    <label>Activity Level</label>
+                    {{ form.activity_level }}
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn">Save Profile</button>
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

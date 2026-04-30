@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Workout</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* FORM */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 6px;
+            background: #1e293b;
+            color: white;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #00e5ff;
+        }
+
+        /* BUTTON */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* HINT */
+        .hint {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        /* INFO CARD */
+        .info {
+            margin-bottom: 15px;
+            background: rgba(0,229,255,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        /* BACK */
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>🏋️ Add Workout</h2>
+        <p>Track your activity & burn calories smartly</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card">
+
+        <!-- INFO -->
+        <div class="info">
+            🔥 Calories will be calculated automatically based on workout & duration
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- WORKOUT TYPE -->
+            <label for="workout">Workout Type</label>
+            <select name="workout_type" id="workout" required>
+                <option value="">-- Select Workout --</option>
+                <option value="running">🏃 Running</option>
+                <option value="walking">🚶 Walking</option>
+                <option value="cycling">🚴 Cycling</option>
+                <option value="gym">🏋️ Gym</option>
+                <option value="yoga">🧘 Yoga</option>
+                <option value="football">⚽ Football</option>
+                <option value="cricket">🏏 Cricket</option>
+            </select>
+
+            <!-- DURATION -->
+            <label for="duration">Duration (minutes)</label>
+            <input 
+                type="number" 
+                name="duration_minutes" 
+                id="duration"
+                placeholder="Enter duration"
+                required
+            >
+
+            <p class="hint">💡 Tip: Longer duration = more calories burned</p>
+
+            <button type="submit" class="btn">Save Workout</button>
+        </form>
+
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

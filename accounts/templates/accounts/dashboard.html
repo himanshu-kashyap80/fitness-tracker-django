@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FitTrack Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.15);
+  --orange-glow: rgba(255,107,53,0.3);
+  --green: #00D97E;
+  --green-dim: rgba(0,217,126,0.12);
+  --cyan: #00C8FF;
+  --red: #FF4C6A;
+  --yellow: #FFB800;
+  --bg: #0A0B0E;
+  --bg2: #111318;
+  --bg3: #181B22;
+  --bg4: #1F2330;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,107,53,0.35);
+  --text: #F0F2F5;
+  --muted: #7A8090;
+  --muted2: #4A5060;
+  --sidebar-w: 240px;
+  --radius: 14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── SIDEBAR ─────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 36px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--orange);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo-text span { color: var(--orange); }
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted2);
+  padding: 0 12px;
+  margin-bottom: 6px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+
+.nav-link:hover {
+  background: var(--bg4);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.nav-link.active {
+  background: var(--orange-dim);
+  color: var(--orange);
+  border-color: var(--border-hover);
+  font-weight: 500;
+}
+
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.nav-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
+}
+
+.quick-label {
+  font-size: 11px;
+  color: var(--muted2);
+  padding: 0 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.quick-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-decoration: none;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
+
+.quick-link:hover { background: var(--bg4); }
+.quick-link.food { color: var(--green); }
+.quick-link.workout { color: var(--cyan); }
+
+/* ── MAIN ─────────────────────────────── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+  max-width: 960px;
+}
+
+/* ── HEADER ─────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.greeting {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.greeting-meta {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── DATE FILTER ─────────────────────────── */
+.date-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.date-bar input[type="date"] {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.date-bar input[type="date"]:hover,
+.date-bar input[type="date"]:focus {
+  border-color: var(--border-hover);
+}
+
+.date-bar button {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.date-bar button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── CARDS ─────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(255,107,53,0.2);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title .icon { font-size: 16px; }
+
+/* ── STATS GRID (top row) ─────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.stat-card:hover {
+  border-color: rgba(255,107,53,0.2);
+  transform: translateY(-2px);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 60px; height: 60px;
+  border-radius: 0 14px 0 60px;
+  opacity: 0.07;
+}
+
+.stat-card.steps::before { background: var(--cyan); }
+.stat-card.water::before { background: var(--cyan); }
+.stat-card.sleep::before { background: var(--orange); }
+.stat-card.weight::before { background: var(--green); }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stat-value.cyan { color: var(--cyan); }
+.stat-value.orange { color: var(--orange); }
+.stat-value.green { color: var(--green); }
+
+.stat-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 4px;
+}
+
+/* ── PROGRESS + SUBTEXT (NEW) ─────────────── */
+
+.stat-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-bar div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+/* ── PROGRESS BAR ─────────────────────── */
+.progress-wrap {
+  background: var(--bg4);
+  border-radius: 100px;
+  height: 8px;
+  overflow: hidden;
+  margin: 10px 0 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 2px;
+}
+
+/* ── CALORIE CARD ─────────────────────── */
+.calorie-card {
+  background: linear-gradient(135deg, var(--bg2) 0%, #1a1420 100%);
+  border: 1px solid rgba(255,107,53,0.2);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.calorie-card::before {
+  content: '🔥';
+  position: absolute;
+  right: 24px; top: 24px;
+  font-size: 48px;
+  opacity: 0.1;
+}
+
+.cal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cal-main {
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.cal-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cal-goal { color: var(--text); font-weight: 600; }
+
+.macro-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.macro-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.macro-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.macro-val { font-weight: 600; color: var(--text); }
+.macro-label { color: var(--muted); }
+
+.cal-message {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.cal-message.good { background: var(--green-dim); color: var(--green); }
+.cal-message.warn { background: rgba(255,75,106,0.12); color: var(--red); }
+.cal-message.perfect { background: rgba(0,200,255,0.1); color: var(--cyan); }
+
+/* ── TWO-COL GRID ─────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* ── MACRO CHART ─────────────────────── */
+.chart-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.macro-canvas-wrap {
+  width: 150px; height: 150px;
+  position: relative;
+  margin: 8px 0;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.legend-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.legend-val { font-weight: 600; color: var(--text); }
+
+/* ── GOAL CARD ─────────────────────── */
+.goal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg4);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.goal-weights {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: var(--muted);
+}
+
+.goal-pct {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+  text-align: right;
+}
+
+/* ── SUGGESTION CARD ─────────────────── */
+.suggestion-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.suggestion-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.suggestion-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.suggestion-text b { color: var(--orange); }
+
+/* ── LINE CHART ─────────────────────── */
+.line-chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  margin-top: 8px;
+}
+
+/* ── LOG ITEMS ─────────────────────── */
+.log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.log-item:hover { border-color: var(--border-hover); }
+
+.log-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.log-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,75,106,0.12);
+  color: var(--red);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,75,106,0.2);
+}
+
+.delete-btn:hover {
+  background: rgba(255,75,106,0.25);
+  transform: scale(1.08);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+/* ── SECTION MARGIN ─────────────────── */
+.mb-20 { margin-bottom: 20px; }
+
+/* ── RECOMMENDED TABLE ─────────────── */
+.intake-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.intake-row:last-child { border-bottom: none; }
+
+.intake-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.intake-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ── SCROLLBAR ─────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+/* ── RESPONSIVE ─────────────────────── */
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .main { padding: 20px 16px; }
+  .cal-main { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">💪</div>
+    <div class="logo-text">Fit<span>Track</span></div>
+  </div>
+
+  <div class="nav-label">Menu</div>
+
+  <a href="{% url 'dashboard' %}" class="nav-link active">
+    <span class="nav-icon">🏠</span> Dashboard
+  </a>
+  <a href="{% url 'add_food' %}" class="nav-link">
+    <span class="nav-icon">🍽️</span> Add Food
+  </a>
+  <a href="{% url 'add_workout' %}" class="nav-link">
+    <span class="nav-icon">🏋️</span> Add Workout
+  </a>
+  <a href="{% url 'add_stats' %}" class="nav-link">
+    <span class="nav-icon">📊</span> Add Stats
+  </a>
+  <a href="{% url 'add_goal' %}" class="nav-link">
+    <span class="nav-icon">🎯</span> Goals
+  </a>
+  <a href="{% url 'profile' %}" class="nav-link">
+    <span class="nav-icon">👤</span> Profile
+  </a>
+
+  <hr class="nav-divider">
+
+  <div class="quick-label">Quick Add</div>
+  <a href="{% url 'add_food' %}" class="quick-link food">
+    <span>＋</span> Add Food
+  </a>
+  <a href="{% url 'add_workout' %}" class="quick-link workout">
+    <span>＋</span> Add Workout
+  </a>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="main">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <div class="greeting">Hey, {{ request.user.username }} 👋</div>
+      <div class="greeting-meta">
+        {% if request.user.userprofile %}
+          {{ request.user.userprofile.get_goal_display }} · {{ request.user.userprofile.get_activity_level_display }}
+        {% endif %}
+      </div>
+    </div>
+    <div class="header-badge">📅 Today's Summary</div>
+  </div>
+
+  <!-- Date filter -->
+  <form method="GET" class="date-bar">
+    <input type="date" name="date">
+    <button type="submit">View Date</button>
+  </form>
+
+  <!-- Stats Row -->
+  <div class="stats-grid mb-20">
+
+    <!-- STEPS -->
+    <div class="stat-card steps">
+      <div class="stat-label">Steps</div>
+
+      <div class="stat-value cyan">
+        {{ stats.steps }}<span class="stat-unit"> / {{ stats.step_goal }}</span>
+      </div>
+
+      <div class="stat-sub">
+        {{ stats.steps_remaining }} remaining
+      </div>
+
+      <div class="progress-bar">
+        <div style="width: {{ stats.steps_percent }}%;"></div>
+      </div>
+    </div>
+
+    <!-- WATER -->
+    <div class="stat-card water">
+      <div class="stat-label">Water</div>
+
+      <div class="stat-value cyan">
+        {{ stats.water }}<span class="stat-unit"> / {{ stats.water_goal }}L</span>
+      </div>
+
+      <div class="stat-sub">
+        {{ stats.water_remaining }}L remaining
+      </div>
+
+      <div class="progress-bar">
+        <div style="width: {{ stats.water_percent }}%;"></div>
+      </div>
+    </div>
+
+    <!-- SLEEP -->
+    <div class="stat-card sleep">
+      <div class="stat-label">Sleep</div>
+
+      <div class="stat-value orange">
+        {{ stats.sleep }}<span class="stat-unit"> / {{ stats.sleep_goal }}h</span>
+      </div>
+
+      <div class="stat-sub">
+        {{ stats.sleep_remaining }}h remaining
+      </div>
+
+      <div class="progress-bar">
+        <div style="width: {{ stats.sleep_percent }}%;"></div>
+      </div>
+    </div>
+
+    {% if stats.weight %}
+    <div class="stat-card weight" style="grid-column: span 3;">
+      <div class="stat-label">Weight Today</div>
+      <div class="stat-value green">
+        {{ stats.weight }}<span class="stat-unit">kg</span>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- Calorie Card -->
+  <div class="calorie-card mb-20">
+    <div class="cal-row">
+      <div>
+        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Calories Consumed</div>
+        <div class="cal-main">{{ consumed }}</div>
+        <div class="cal-sub">of <span class="cal-goal">{{ calories|floatformat:0 }} kcal</span> goal</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">Remaining</div>
+        <div style="font-family:'Syne',sans-serif; font-size:28px; font-weight:700; letter-spacing:-1px;">{{ remaining|floatformat:0 }}</div>
+        <div style="font-size:12px; color:var(--muted);">kcal left</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap">
+      <div class="progress-fill" style="
+        width: {{ progress }}%;
+        {% if progress < 70 %}background: var(--green);
+        {% elif progress < 100 %}background: var(--yellow);
+        {% else %}background: var(--red);{% endif %}
+      "></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted);">
+      <span>0 kcal</span>
+      <span>{{ progress|floatformat:0 }}% of goal</span>
+      <span>{{ calories|floatformat:0 }} kcal</span>
+    </div>
+
+    <!-- Macros -->
+    <div class="macro-row">
+      <div class="macro-item">
+        <div class="macro-dot" style="background:var(--green);"></div>
+        <span class="macro-label">Protein left</span>
+        <span class="macro-val">{{ protein_remaining }}g</span>
+      </div>
+      <div class="macro-item">
+        <div class="macro-dot" style="background:var(--yellow);"></div>
+        <span class="macro-label">Carbs left</span>
+        <span class="macro-val">{{ carbs_remaining }}g</span>
+      </div>
+      <div class="macro-item">
+        <div class="macro-dot" style="background:var(--red);"></div>
+        <span class="macro-label">Fats left</span>
+        <span class="macro-val">{{ fats_remaining }}g</span>
+      </div>
+    </div>
+
+    <!-- Calorie message -->
+    {% if remaining > 0 %}
+      <div class="cal-message good">✓ {{ calorie_message }}</div>
+    {% elif remaining < 0 %}
+      <div class="cal-message warn">⚠ {{ calorie_message }}</div>
+    {% else %}
+      <div class="cal-message perfect">✦ {{ calorie_message }}</div>
+    {% endif %}
+  </div>
+
+  <!-- Macro Chart + Recommended Intake -->
+  <div class="two-col mb-20">
+
+    <!-- Macro Pie -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Consumed Macros</div>
+      <div class="chart-area">
+        <div class="macro-canvas-wrap">
+          <canvas id="macroChart" role="img" aria-label="Pie chart of consumed macros: protein, carbs, fats"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-row">
+            <div class="legend-label"><div class="legend-dot" style="background:var(--green);"></div> Protein</div>
+            <div class="legend-val">{{ protein_consumed|default:0 }}g</div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-label"><div class="legend-dot" style="background:var(--yellow);"></div> Carbs</div>
+            <div class="legend-val">{{ carbs_consumed|default:0 }}g</div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-label"><div class="legend-dot" style="background:var(--red);"></div> Fats</div>
+            <div class="legend-val">{{ fats_consumed|default:0 }}g</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Intake -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🍽️</span> Recommended Intake</div>
+      <div class="intake-row">
+        <div class="intake-label">
+          <div class="macro-dot" style="background:var(--green);"></div> Protein
+        </div>
+        <div class="intake-val" style="color:var(--green);">{{ protein }}g</div>
+      </div>
+      <div class="intake-row">
+        <div class="intake-label">
+          <div class="macro-dot" style="background:var(--yellow);"></div> Carbs
+        </div>
+        <div class="intake-val" style="color:var(--yellow);">{{ carbs }}g</div>
+      </div>
+      <div class="intake-row">
+        <div class="intake-label">
+          <div class="macro-dot" style="background:var(--red);"></div> Fats
+        </div>
+        <div class="intake-val" style="color:var(--red);">{{ fats }}g</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Progress + Smart Suggestion -->
+  <div class="two-col mb-20">
+
+    <!-- Goal -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Goal Progress</div>
+      {% if goal %}
+        <div class="goal-pill">{{ goal.get_goal_type_display }}</div>
+        <div class="goal-weights">
+          <span>Start: <b style="color:var(--text);">{{ goal.start_weight }} kg</b></span>
+          <span>Target: <b style="color:var(--text);">{{ goal.target_weight }} kg</b></span>
+        </div>
+        <div class="progress-wrap" style="height:10px;">
+          <div class="progress-fill" style="width:{{ goal_progress }}%; background:var(--green);"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:13px;">
+          <span style="color:var(--muted);">Progress</span>
+          <span class="goal-pct">{{ goal_progress|floatformat:0 }}% done</span>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🎯</div>
+          No goal set yet.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Smart Suggestion -->
+    <div class="card" style="border-left: 3px solid var(--orange);">
+      <div class="card-title"><span class="icon">🧠</span> Smart Suggestion</div>
+      {% if protein_remaining > 40 %}
+        <div class="suggestion-text">
+          You still need <b>{{ protein_remaining }}g protein</b> today.<br>
+          Go for chicken, paneer, or eggs to hit your target.
+        </div>
+      {% elif protein_remaining > 20 %}
+        <div class="suggestion-text">
+          <b>{{ protein_remaining }}g protein</b> remaining — add eggs, dal, or a glass of milk.
+        </div>
+      {% elif protein_remaining > 0 %}
+        <div class="suggestion-text">
+          Just <b>{{ protein_remaining }}g left</b> — curd or a small handful of nuts will do it.
+        </div>
+      {% else %}
+        <div class="suggestion-text" style="color:var(--green);">
+          ✓ Protein goal complete. Keep the balance going!
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Calorie Chart -->
+  <div class="card mb-20">
+    <div class="card-title"><span class="icon">📈</span> Calorie Trend</div>
+    <div class="line-chart-wrap">
+      <canvas id="calorieChart" role="img" aria-label="Line chart of calorie consumed vs burned over time"></canvas>
+    </div>
+  </div>
+
+  <!-- Food Log -->
+  <div class="card mb-20">
+    <div class="card-title" style="justify-content:space-between;">
+      <span><span class="icon">🍽️</span> Food Log</span>
+      <span style="font-size:13px; color:var(--orange); font-family:'Syne',sans-serif; font-weight:700;">{{ total_food_calories }} kcal</span>
+    </div>
+    {% if foods %}
+      {% for food in foods %}
+        <div class="log-item">
+          <div>
+            <div class="log-name">{{ food.name }}</div>
+            <div class="log-meta">{{ food.quantity }}g → {{ food.total_calories }} kcal</div>
+          </div>
+          <a href="{% url 'delete_food' food.id %}" class="delete-btn" title="Remove">✕</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🍽️</div>
+        No food added yet.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Workout Log -->
+  <div class="card mb-20">
+    <div class="card-title"><span class="icon">🏃</span> Recent Workouts</div>
+    {% if recent_workouts %}
+      {% for workout in recent_workouts %}
+        <div class="log-item">
+          <div>
+            <div class="log-name">{{ workout.workout_type }}</div>
+            <div class="log-meta">{{ workout.duration_minutes }} min · 🔥 {{ workout.calories|floatformat:0 }} kcal burned</div>
+          </div>
+          <a href="{% url 'delete_workout' workout.id %}"
+             onclick="return confirm('Delete this workout?')"
+             class="delete-btn" title="Remove">✕</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🏋️</div>
+        No workouts added yet.
+      </div>
+    {% endif %}
+  </div>
+
+</div><!-- end .main -->
+
+<!-- ── SCRIPTS ── -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // Macro Pie Chart
+  const macroCtx = document.getElementById('macroChart');
+  if (macroCtx) {
+    new Chart(macroCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Protein', 'Carbs', 'Fats'],
+        datasets: [{
+          data: [
+            {{ protein_consumed|default:0 }},
+            {{ carbs_consumed|default:0 }},
+            {{ fats_consumed|default:0 }}
+          ],
+          backgroundColor: ['#00D97E', '#FFB800', '#FF4C6A'],
+          borderWidth: 0,
+          hoverOffset: 8,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '68%',
+        animation: { animateRotate: true, animateScale: true, duration: 1000 },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Calorie Line Chart
+  const calCtx = document.getElementById('calorieChart');
+  if (calCtx) {
+    new Chart(calCtx, {
+      type: 'line',
+      data: {
+        labels: {{ dates|safe }},
+        datasets: [
+          {
+            label: 'Consumed',
+            data: {{ calories_data|safe }},
+            borderColor: '#FF6B35',
+            backgroundColor: 'rgba(255,107,53,0.08)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#FF6B35',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: 'Burned',
+            data: {{ burned_data|safe }},
+            borderColor: '#00C8FF',
+            backgroundColor: 'rgba(0,200,255,0.06)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#00C8FF',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: '#7A8090',
+              font: { size: 12, family: 'DM Sans' },
+              boxWidth: 12,
+              boxHeight: 12,
+              borderRadius: 4,
+              padding: 20,
+              usePointStyle: false
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#7A8090', font: { size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#7A8090', font: { size: 11 } }
+          }
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>

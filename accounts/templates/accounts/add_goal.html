@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set Goal</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* HEADER */
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* FORM */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 6px;
+            background: #1e293b;
+            color: white;
+        }
+
+        select:focus, input:focus {
+            outline: 2px solid #00e5ff;
+        }
+
+        /* BUTTON */
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* INFO */
+        .info {
+            margin-bottom: 15px;
+            background: rgba(255,152,0,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        /* BACK */
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>🎯 Set Your Goal</h2>
+        <p>Define your fitness target to get personalized tracking</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card">
+
+        <!-- INFO -->
+        <div class="info">
+            💡 Choose your goal carefully — it affects calorie targets & suggestions
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="btn">Save Goal</button>
+        </form>
+
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>
