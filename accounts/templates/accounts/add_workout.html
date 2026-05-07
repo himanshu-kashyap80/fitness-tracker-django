@@ -1,166 +1,665 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Workout</title>
+<meta charset="UTF-8">
+<title>FitTrack — Add Workout</title>
 
-    <style>
-        body {
-            background: #0f172a;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-        .main {
-            max-width: 700px;
-            margin: auto;
-        }
+<style>
+:root {
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  --orange-glow: rgba(255,107,53,0.28);
+  --green: #00D97E;
+  --green-dim: rgba(0,217,126,0.12);
+  --cyan: #00C8FF;
+  --red: #FF4C6A;
 
-        /* HEADER */
-        .header h2 {
-            margin-bottom: 5px;
-        }
+  --bg: #0A0B0E;
+  --bg2: #111318;
+  --bg3: #181B22;
+  --bg4: #1F2330;
 
-        .header p {
-            color: #aaa;
-            margin-bottom: 20px;
-        }
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,107,53,0.28);
 
-        /* CARD */
-        .card {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-        }
+  --text: #F0F2F5;
+  --muted: #7A8090;
+  --muted2: #4A5060;
 
-        .card:hover {
-            transform: translateY(-3px);
-        }
+  --sidebar-w: 240px;
+  --radius: 14px;
+}
 
-        /* FORM */
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-            color: #ccc;
-        }
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            margin-top: 6px;
-            background: #1e293b;
-            color: white;
-        }
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  display:flex;
+}
 
-        input:focus, select:focus {
-            outline: 2px solid #00e5ff;
-        }
+/* ───────── SIDEBAR ───────── */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  padding:28px 16px;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  flex-shrink:0;
+}
 
-        /* BUTTON */
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #ff9800, #ff5722);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 18px;
-        }
+.logo-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:36px;
+  padding:0 8px;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+.logo-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--orange);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  box-shadow:0 4px 14px rgba(255,107,53,0.3);
+}
 
-        /* HINT */
-        .hint {
-            font-size: 13px;
-            color: #aaa;
-            margin-top: 6px;
-        }
+.logo-text{
+  font-family:'Syne',sans-serif;
+  font-size:20px;
+  font-weight:800;
+}
 
-        /* INFO CARD */
-        .info {
-            margin-bottom: 15px;
-            background: rgba(0,229,255,0.1);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
+.logo-text span{
+  color:var(--orange);
+}
 
-        /* BACK */
-        .back-btn {
-            display: inline-block;
-            margin-top: 15px;
-            color: #ff9800;
-            text-decoration: none;
-        }
+.nav-label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--muted2);
+  margin-bottom:6px;
+  padding:0 12px;
+}
 
-        .back-btn:hover {
-            text-decoration: underline;
-        }
-    </style>
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  color:var(--muted);
+  text-decoration:none;
+  margin-bottom:4px;
+  border:1px solid transparent;
+  transition:0.2s;
+}
+
+.nav-link:hover{
+  background:var(--bg4);
+  color:var(--text);
+}
+
+.nav-link.active{
+  background:var(--orange-dim);
+  color:var(--orange);
+  border-color:var(--border-hover);
+}
+
+.nav-divider{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:16px 0;
+}
+
+.quick-label{
+  font-size:11px;
+  color:var(--muted2);
+  padding:0 12px;
+  margin-bottom:8px;
+}
+
+.quick-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  transition:0.2s;
+}
+
+.quick-link:hover{
+  background:var(--bg4);
+}
+
+.quick-link.food{
+  color:var(--green);
+}
+
+.quick-link.workout{
+  color:var(--cyan);
+}
+
+/* ───────── MAIN ───────── */
+.main{
+  flex:1;
+  padding:32px 28px;
+  max-width:900px;
+}
+
+/* ───────── HEADER ───────── */
+.page-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:28px;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.page-title{
+  font-family:'Syne',sans-serif;
+  font-size:28px;
+  font-weight:800;
+}
+
+.page-sub{
+  color:var(--muted);
+  margin-top:5px;
+  font-size:14px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 16px;
+  border-radius:10px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  text-decoration:none;
+  color:var(--muted);
+  transition:0.2s;
+  font-size:13px;
+}
+
+.back-btn:hover{
+  border-color:var(--border-hover);
+  color:var(--orange);
+}
+
+/* ───────── TOP CARDS ───────── */
+.stat-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,107,53,0.2);
+}
+
+.card-title{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-bottom:12px;
+  font-family:'Syne',sans-serif;
+}
+
+/* motivation */
+.card.motivation{
+  border-left:3px solid var(--cyan);
+}
+
+.motivation-text{
+  font-size:14px;
+  line-height:1.7;
+}
+
+.motivation-text b{
+  color:var(--cyan);
+}
+
+/* calorie goal */
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.progress-wrap{
+  height:8px;
+  border-radius:100px;
+  background:var(--bg4);
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  width:{{ calorie_progress|default:45 }}%;
+  background:var(--orange);
+  border-radius:100px;
+}
+
+.progress-pct{
+  margin-top:10px;
+  font-size:24px;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  color:var(--orange);
+}
+
+/* ───────── FORM CARD ───────── */
+.form-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+}
+
+.form-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.form-heading{
+  font-family:'Syne',sans-serif;
+  font-size:20px;
+  font-weight:700;
+}
+
+.info-badge{
+  background:rgba(0,200,255,0.1);
+  color:var(--cyan);
+  border:1px solid rgba(0,200,255,0.2);
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.input-group{
+  display:flex;
+  flex-direction:column;
+}
+
+.input-group.full{
+  grid-column:1 / -1;
+}
+
+label{
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:500;
+}
+
+input,
+select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--bg3);
+  color:var(--text);
+  font-size:14px;
+  font-family:'DM Sans',sans-serif;
+  transition:0.2s;
+}
+
+input:focus,
+select:focus{
+  outline:none;
+  border-color:var(--border-hover);
+  background:var(--bg4);
+  box-shadow:0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.hint{
+  margin-top:8px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* ───────── WORKOUT PREVIEW ───────── */
+.preview-box{
+  margin-top:20px;
+  padding:16px;
+  border-radius:12px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+}
+
+.preview-title{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.preview-stats{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.preview-item{
+  font-size:14px;
+}
+
+.preview-item b{
+  color:var(--orange);
+}
+
+/* ───────── BUTTON ───────── */
+.submit-btn{
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:var(--orange);
+  color:white;
+  font-family:'Syne',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 4px 16px rgba(255,107,53,0.3);
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(255,107,53,0.4);
+}
+
+/* ───────── RESPONSIVE ───────── */
+@media(max-width:700px){
+
+  .sidebar{
+    display:none;
+  }
+
+  .main{
+    padding:20px 16px;
+  }
+
+  .stat-row{
+    grid-template-columns:1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
+<!-- ───────── SIDEBAR ───────── -->
+<div class="sidebar">
+
+  <div class="logo-row">
+    <div class="logo-icon">💪</div>
+    <div class="logo-text">Fit<span>Track</span></div>
+  </div>
+
+  <div class="nav-label">Menu</div>
+
+  <a href="{% url 'dashboard' %}" class="nav-link">
+    🏠 Dashboard
+  </a>
+
+  <a href="{% url 'add_food' %}" class="nav-link">
+    🍽️ Add Food
+  </a>
+
+  <a href="{% url 'add_workout' %}" class="nav-link active">
+    🏋️ Add Workout
+  </a>
+
+  <a href="{% url 'add_stats' %}" class="nav-link">
+    📊 Add Stats
+  </a>
+
+  <a href="{% url 'add_goal' %}" class="nav-link">
+    🎯 Goals
+  </a>
+
+  <a href="{% url 'profile' %}" class="nav-link">
+    👤 Profile
+  </a>
+
+  <hr class="nav-divider">
+
+  <div class="quick-label">Quick Add</div>
+
+  <a href="{% url 'add_food' %}" class="quick-link food">
+    ➕ Add Food
+  </a>
+
+  <a href="{% url 'add_workout' %}" class="quick-link workout">
+    ➕ Add Workout
+  </a>
+
+</div>
+
+<!-- ───────── MAIN ───────── -->
 <div class="main">
 
-    <!-- HEADER -->
-    <div class="header">
-        <h2>🏋️ Add Workout</h2>
-        <p>Track your activity & burn calories smartly</p>
+  <!-- HEADER -->
+  <div class="page-header">
+
+    <div>
+      <div class="page-title">Add Workout 🏋️</div>
+      <div class="page-sub">
+        Track workouts and monitor calories burned
+      </div>
     </div>
 
-    <!-- FORM CARD -->
+    <a href="{% url 'dashboard' %}" class="back-btn">
+      ← Dashboard
+    </a>
+
+  </div>
+
+  <!-- TOP STATS -->
+  <div class="stat-row">
+
+    <!-- Motivation -->
+    <div class="card motivation">
+
+      <div class="card-title">
+        🔥 Daily Motivation
+      </div>
+
+      <div class="motivation-text">
+        You're building consistency.<br>
+        Even <b>30 minutes</b> of movement daily improves fitness, mood, and energy.
+      </div>
+
+    </div>
+
+    <!-- Calories -->
     <div class="card">
 
-        <!-- INFO -->
-        <div class="info">
-            🔥 Calories will be calculated automatically based on workout & duration
-        </div>
+      <div class="card-title">
+        ⚡ Calories Burned Goal
+      </div>
 
-        <form method="POST">
-            {% csrf_token %}
+      <div class="progress-label">
+        <span>Today's progress</span>
+        <span>{{ calorie_progress|default:45 }}%</span>
+      </div>
 
-            <!-- WORKOUT TYPE -->
-            <label for="workout">Workout Type</label>
-            <select name="workout_type" id="workout" required>
-                <option value="">-- Select Workout --</option>
-                <option value="running">🏃 Running</option>
-                <option value="walking">🚶 Walking</option>
-                <option value="cycling">🚴 Cycling</option>
-                <option value="gym">🏋️ Gym</option>
-                <option value="yoga">🧘 Yoga</option>
-                <option value="football">⚽ Football</option>
-                <option value="cricket">🏏 Cricket</option>
-            </select>
+      <div class="progress-wrap">
+        <div class="progress-fill"></div>
+      </div>
 
-            <!-- DURATION -->
-            <label for="duration">Duration (minutes)</label>
-            <input 
-                type="number" 
-                name="duration_minutes" 
-                id="duration"
-                placeholder="Enter duration"
-                required
-            >
-
-            <p class="hint">💡 Tip: Longer duration = more calories burned</p>
-
-            <button type="submit" class="btn">Save Workout</button>
-        </form>
+      <div class="progress-pct">
+        {{ calorie_progress|default:45 }}%
+      </div>
 
     </div>
 
-    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+
+    <div class="form-top">
+
+      <div class="form-heading">
+        Workout Details
+      </div>
+
+      <div class="info-badge">
+        🔥 Calories calculated automatically
+      </div>
+
+    </div>
+
+    <form method="POST">
+
+      {% csrf_token %}
+
+      <div class="form-grid">
+
+        <!-- workout type -->
+        <div class="input-group">
+
+          <label>Workout Type</label>
+
+          <select name="workout_type" required>
+
+            <option value="">Select Workout</option>
+
+            <option value="running">🏃 Running</option>
+            <option value="walking">🚶 Walking</option>
+            <option value="cycling">🚴 Cycling</option>
+            <option value="gym">🏋️ Gym</option>
+            <option value="yoga">🧘 Yoga</option>
+            <option value="football">⚽ Football</option>
+            <option value="cricket">🏏 Cricket</option>
+            <option value="swimming">🏊 Swimming</option>
+            <option value="hiit">⚡ HIIT</option>
+
+          </select>
+
+        </div>
+
+        <!-- duration -->
+        <div class="input-group">
+
+          <label>Duration (minutes)</label>
+
+          <input
+            type="number"
+            name="duration_minutes"
+            placeholder="Enter duration"
+            required
+          >
+
+          <div class="hint">
+            💡 Longer duration = more calories burned
+          </div>
+
+        </div>
+
+        <!-- intensity -->
+        <div class="input-group full">
+
+          <label>Workout Intensity</label>
+
+          <select name="intensity">
+
+            <option>Low Intensity</option>
+            <option>Moderate Intensity</option>
+            <option>High Intensity</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <!-- preview -->
+      <div class="preview-box">
+
+        <div class="preview-title">
+          Workout Benefits
+        </div>
+
+        <div class="preview-stats">
+
+          <div class="preview-item">
+            💪 Improves <b>strength</b>
+          </div>
+
+          <div class="preview-item">
+            ❤️ Boosts <b>heart health</b>
+          </div>
+
+          <div class="preview-item">
+            🔥 Burns <b>calories</b>
+          </div>
+
+        </div>
+
+      </div>
+
+      <button type="submit" class="submit-btn">
+        Save Workout
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
 

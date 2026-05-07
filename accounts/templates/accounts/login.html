@@ -2,151 +2,378 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fitness Login</title>
+<title>FitTrack — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+:root {
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  --orange-glow: rgba(255,107,53,0.28);
+  --bg: #0A0B0E;
+  --bg2: #111318;
+  --bg3: #181B22;
+  --bg4: #1F2330;
+  --border: rgba(255,255,255,0.07);
+  --border-focus: rgba(255,107,53,0.5);
+  --text: #F0F2F5;
+  --muted: #7A8090;
+  --muted2: #4A5060;
+  --red: #FF4C6A;
+  --radius: 14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    margin: 0;
-    height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
 }
 
-/* Background images */
-.bg-img {
-    position: absolute;
-    opacity: 0.08;
+/* ── BACKGROUND ── */
+.bg-rings {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.left-dumbbell {
-    left: 30px;
-    bottom: 40px;
-    width: 220px;
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,107,53,0.07);
+  transform: translate(-50%, -50%);
+  left: 50%; top: 50%;
+  animation: pulse-ring 6s ease-in-out infinite;
 }
 
-.right-fruit {
-    right: 40px;
-    top: 40px;
-    width: 180px;
+.ring:nth-child(1) { width: 360px; height: 360px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 580px; height: 580px; animation-delay: 1s; border-color: rgba(255,107,53,0.045); }
+.ring:nth-child(3) { width: 820px; height: 820px; animation-delay: 2s; border-color: rgba(255,107,53,0.025); }
+.ring:nth-child(4) { width: 1080px; height: 1080px; animation-delay: 3s; border-color: rgba(255,107,53,0.012); }
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.03); }
 }
 
-/* CARD */
-.login-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    padding: 35px;
-    border-radius: 18px;
-    width: 350px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-    text-align: center;
-    transition: 0.3s;
+.bg-glow {
+  position: fixed;
+  width: 480px; height: 480px;
+  background: radial-gradient(circle, rgba(255,107,53,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.login-card:hover {
-    transform: translateY(-3px);
+/* ── SPLIT LAYOUT ── */
+.layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  padding: 24px;
+  animation: slide-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* TITLE */
-.title {
-    font-size: 26px;
-    font-weight: bold;
-    color: #ff9800;
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.subtitle {
-    color: #aaa;
-    margin-bottom: 20px;
+/* ── LEFT PANEL (branding) ── */
+.brand-panel {
+  width: 260px;
+  flex-shrink: 0;
 }
 
-/* INPUT */
-.input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 10px;
-    border: none;
-    background: #1e293b;
-    color: white;
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
 }
 
-.input:focus {
-    outline: 2px solid #ff9800;
+.logo-icon {
+  width: 42px; height: 42px;
+  background: var(--orange);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 18px rgba(255,107,53,0.38);
+  flex-shrink: 0;
 }
 
-/* BUTTON */
-.btn {
-    margin-top: 15px;
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #ff9800, #ff5722);
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
-.btn:hover {
-    opacity: 0.9;
+.logo-text span { color: var(--orange); }
+
+.brand-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  margin-bottom: 14px;
 }
 
-/* ERROR */
-.error {
-    background: rgba(255,0,0,0.15);
-    color: #ff6b6b;
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    font-size: 14px;
+.brand-heading em {
+  font-style: normal;
+  color: var(--orange);
 }
 
-/* LINK */
-a {
-    color: #ff9800;
-    text-decoration: none;
+.brand-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
 }
 
-a:hover {
-    text-decoration: underline;
+.perks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.perk-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+/* ── DIVIDER LINE ── */
+.vert-divider {
+  width: 1px;
+  height: 320px;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  flex-shrink: 0;
+}
+
+/* ── CARD ── */
+.card {
+  width: 360px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
+
+.card-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+/* ── ERROR ── */
+.error-box {
+  background: rgba(255,75,106,0.1);
+  border: 1px solid rgba(255,75,106,0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── FORM FIELDS ── */
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.field input:focus {
+  border-color: var(--border-focus);
+  background: var(--bg4);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.field input::placeholder { color: var(--muted2); }
+
+/* ── BUTTON ── */
+.btn-submit {
+  width: 100%;
+  padding: 13px;
+  background: var(--orange);
+  border: none;
+  border-radius: 11px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(255,107,53,0.3);
+}
+
+.btn-submit:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(255,107,53,0.42);
+}
+
+.btn-submit:active { transform: translateY(0); }
+
+/* ── FOOTER ── */
+.card-footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.card-footer a {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.card-footer a:hover { opacity: 0.8; text-decoration: underline; }
+
+/* ── RESPONSIVE: collapse split layout on small screens ── */
+@media (max-width: 720px) {
+  .brand-panel, .vert-divider { display: none; }
+  .layout { justify-content: center; }
+  .card { width: 90vw; max-width: 380px; }
 }
 </style>
 </head>
-
 <body>
 
-<!-- BACKGROUND -->
-<img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" class="bg-img left-dumbbell">
-<img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="bg-img right-fruit">
+<div class="bg-rings">
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+</div>
+<div class="bg-glow"></div>
 
-<div class="login-card">
+<div class="layout">
 
-    <div class="title">Fitness Tracker</div>
-    <div class="subtitle">Train hard. Stay strong.</div>
+  <!-- ── LEFT BRANDING ── -->
+  <div class="brand-panel">
+    <div class="logo-row">
+      <div class="logo-icon">💪</div>
+      <div class="logo-text">Fit<span>Track</span></div>
+    </div>
 
-    <!-- 🔴 ERROR MESSAGE -->
+    <div class="brand-heading">Train hard.<br><em>Stay strong.</em></div>
+    <div class="brand-sub">Log your meals, track your workouts, and hit every goal — all in one place.</div>
+
+    <div class="perks">
+      <div class="perk"><div class="perk-dot"></div> Calorie & macro tracking</div>
+      <div class="perk"><div class="perk-dot"></div> Workout logging</div>
+      <div class="perk"><div class="perk-dot"></div> Goal progress monitoring</div>
+      <div class="perk"><div class="perk-dot"></div> Daily health stats</div>
+    </div>
+  </div>
+
+  <!-- ── VERTICAL DIVIDER ── -->
+  <div class="vert-divider"></div>
+
+  <!-- ── LOGIN CARD ── -->
+  <div class="card">
+    <div class="card-heading">Welcome back</div>
+    <div class="card-sub">Sign in to continue your journey</div>
+
     {% if error %}
-        <div class="error">
-            {{ error }}
-        </div>
+    <div class="error-box">⚠ {{ error }}</div>
     {% endif %}
 
     <form method="POST">
-        {% csrf_token %}
+      {% csrf_token %}
 
-        <input type="text" name="username" placeholder="Username" class="input" required>
+      <div class="field">
+        <label for="id_username">Username</label>
+        <input type="text" id="id_username" name="username" placeholder="Enter your username" required>
+      </div>
 
-        <input type="password" name="password" placeholder="Password" class="input" required>
+      <div class="field">
+        <label for="id_password">Password</label>
+        <input type="password" id="id_password" name="password" placeholder="Enter your password" required>
+      </div>
 
-        <button type="submit" class="btn">Login</button>
+      <button type="submit" class="btn-submit">Sign In →</button>
     </form>
 
-    <div style="margin-top: 15px;">
-        <a href="{% url 'register' %}">Create Account</a>
+    <div class="card-footer">
+      Don't have an account? <a href="{% url 'register' %}">Create one</a>
     </div>
+  </div>
 
 </div>
 

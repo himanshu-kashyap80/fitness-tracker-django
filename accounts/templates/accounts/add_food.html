@@ -1,257 +1,687 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Food</title>
+<meta charset="UTF-8">
+<title>FitTrack — Add Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            background: #0f172a;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            padding: 20px;
-        }
+<style>
+:root {
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  --orange-glow: rgba(255,107,53,0.28);
+  --green: #00D97E;
+  --green-dim: rgba(0,217,126,0.1);
+  --cyan: #00C8FF;
+  --yellow: #FFB800;
+  --red: #FF4C6A;
+  --bg: #0A0B0E;
+  --bg2: #111318;
+  --bg3: #181B22;
+  --bg4: #1F2330;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,107,53,0.3);
+  --text: #F0F2F5;
+  --muted: #7A8090;
+  --muted2: #4A5060;
+  --sidebar-w: 240px;
+  --radius: 14px;
+}
 
-        .main {
-            max-width: 900px;
-            margin: auto;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .header h2 {
-            margin-bottom: 5px;
-        }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+}
 
-        .header p {
-            color: #aaa;
-        }
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
 
-        /* GRID */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 36px;
+}
 
-        /* CARD */
-        .card {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-        }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--orange);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(255,107,53,0.32);
+}
 
-        .card:hover {
-            transform: translateY(-3px);
-        }
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
 
-        /* TEXT */
-        .stat-sub {
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 6px;
-        }
+.logo-text span { color: var(--orange); }
 
-        /* PROGRESS */
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 10px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted2);
+  padding: 0 12px;
+  margin-bottom: 6px;
+}
 
-        .progress-bar div {
-            height: 100%;
-            background: linear-gradient(90deg, #00e5ff, #00e676);
-            border-radius: 10px;
-            transition: width 0.4s ease;
-        }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
 
-        /* FLEX */
-        .flex {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+.nav-link:hover {
+  background: var(--bg4);
+  color: var(--text);
+  border-color: var(--border);
+}
 
-        .flex-between {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.nav-link.active {
+  background: var(--orange-dim);
+  color: var(--orange);
+  border-color: var(--border-hover);
+  font-weight: 500;
+}
 
-        /* INPUT */
-        .input {
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            width: 260px;
-            background: #1e293b;
-            color: white;
-        }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
-        /* BUTTON */
-        .btn {
-            padding: 10px 15px;
-            background: linear-gradient(135deg, #ff9800, #ff5722);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.nav-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
+}
 
-        /* QUANTITY */
-        .qty {
-            width: 70px;
-            padding: 6px;
-            border-radius: 6px;
-            border: none;
-            background: #1e293b;
-            color: white;
-        }
+.quick-label {
+  font-size: 11px;
+  color: var(--muted2);
+  padding: 0 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
 
-        /* TAG */
-        .tag {
-            font-size: 10px;
-            padding: 3px 6px;
-            border-radius: 6px;
-            margin-left: 6px;
-            background: #00e676;
-            color: black;
-        }
+.quick-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-decoration: none;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
 
-        /* BACK */
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #ff9800;
-        }
-    </style>
+.quick-link:hover { background: var(--bg4); }
+.quick-link.food { color: var(--green); }
+.quick-link.workout { color: var(--cyan); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  padding: 32px 28px;
+  overflow-y: auto;
+  max-width: 900px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.page-sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--orange);
+}
+
+/* ── TOP STAT CARDS ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(255,107,53,0.2);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+/* suggestion card accent */
+.card.suggestion {
+  border-left: 3px solid var(--orange);
+}
+
+.suggestion-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.suggestion-text b { color: var(--orange); }
+
+.suggestion-text.done { color: var(--green); font-weight: 500; }
+
+/* protein progress card */
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.progress-label span { font-weight: 600; color: var(--text); }
+
+.progress-wrap {
+  background: var(--bg4);
+  border-radius: 100px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: var(--green);
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 2px;
+}
+
+.progress-pct {
+  margin-top: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: -1px;
+}
+
+.progress-pct span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+
+/* ── SEARCH BAR ── */
+.search-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+
+.search-card:focus-within {
+  border-color: var(--border-hover);
+}
+
+.search-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  padding: 11px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--border-hover);
+  background: var(--bg4);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+.search-input::placeholder { color: var(--muted2); }
+
+.search-btn {
+  padding: 11px 22px;
+  background: var(--orange);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(255,107,53,0.28);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.search-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.38);
+}
+
+.search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── RESULTS SECTION ── */
+.results-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted2);
+  margin-bottom: 12px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* ── FOOD RESULT CARD ── */
+.food-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.food-card:hover {
+  border-color: rgba(255,107,53,0.25);
+  transform: translateY(-2px);
+}
+
+.food-info { flex: 1; min-width: 0; }
+
+.food-name {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.food-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.food-meta b { color: var(--text); font-weight: 500; }
+
+/* tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.tag.best {
+  background: rgba(255,184,0,0.15);
+  color: var(--yellow);
+  border: 1px solid rgba(255,184,0,0.25);
+}
+
+.tag.protein {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(0,217,126,0.2);
+}
+
+/* qty + add row */
+.food-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.qty-input {
+  width: 68px;
+  padding: 8px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.qty-input:focus {
+  border-color: var(--border-hover);
+}
+
+.add-btn {
+  padding: 8px 16px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 8px;
+  color: var(--orange);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.add-btn:hover {
+  background: rgba(255,107,53,0.22);
+  transform: translateY(-1px);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .main { padding: 20px 16px; }
+  .stat-row { grid-template-columns: 1fr; }
+  .results-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
-
 <body>
 
-<div class="main">
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="logo-row">
+    <div class="logo-icon">💪</div>
+    <div class="logo-text">Fit<span>Track</span></div>
+  </div>
 
-    <!-- HEADER -->
-    <div class="header">
-        <h2>Add Food 🍽️</h2>
-        <p>Track your nutrition smartly</p>
-    </div>
+  <div class="nav-label">Menu</div>
 
-    <!-- CARDS -->
-    <div class="cards">
+  <a href="{% url 'dashboard' %}" class="nav-link">
+    <span class="nav-icon">🏠</span> Dashboard
+  </a>
+  <a href="{% url 'add_food' %}" class="nav-link active">
+    <span class="nav-icon">🍽️</span> Add Food
+  </a>
+  <a href="{% url 'add_workout' %}" class="nav-link">
+    <span class="nav-icon">🏋️</span> Add Workout
+  </a>
+  <a href="{% url 'add_stats' %}" class="nav-link">
+    <span class="nav-icon">📊</span> Add Stats
+  </a>
+  <a href="{% url 'add_goal' %}" class="nav-link">
+    <span class="nav-icon">🎯</span> Goals
+  </a>
+  <a href="{% url 'profile' %}" class="nav-link">
+    <span class="nav-icon">👤</span> Profile
+  </a>
 
-        <!-- SMART SUGGESTION -->
-        <div class="card">
-            <h4>🧠 Smart Suggestion</h4>
+  <hr class="nav-divider">
 
-            {% if protein_remaining > 40 %}
-                <p>You need <b>{{ protein_remaining|floatformat:0 }}g protein</b> 💪</p>
-                <small>👉 chicken, paneer, eggs</small>
-
-            {% elif protein_remaining > 20 %}
-                <p>You need <b>{{ protein_remaining|floatformat:0 }}g protein</b></p>
-                <small>👉 eggs, dal, milk</small>
-
-            {% elif protein_remaining > 0 %}
-                <p>Only <b>{{ protein_remaining|floatformat:0 }}g protein</b> left 🔥</p>
-                <small>👉 curd, nuts</small>
-
-            {% else %}
-                <p style="color:#00e676;">✅ Protein goal achieved!</p>
-            {% endif %}
-        </div>
-
-        <!-- PROTEIN PROGRESS -->
-        <div class="card">
-            <h4>💪 Protein Progress</h4>
-
-            <div class="progress-bar">
-                <div style="width: {{ protein_progress }}%;"></div>
-            </div>
-
-            <p class="stat-sub">
-                {{ protein_progress|floatformat:0 }}% completed
-            </p>
-        </div>
-
-    </div>
-
-    <!-- SEARCH -->
-    <div class="card" style="margin-top:15px;">
-        <form method="POST" id="searchForm" class="flex">
-            {% csrf_token %}
-
-            <input 
-                type="text" 
-                name="name" 
-                placeholder="Search food..."
-                value="{{ request.POST.name }}"
-                required
-                class="input"
-            >
-
-            <button type="submit" id="searchBtn" class="btn">
-                🔍 Search
-            </button>
-        </form>
-    </div>
-
-    <!-- RESULTS -->
-    {% if food_options %}
-    <div class="cards" style="margin-top:15px;">
-
-        {% for food in food_options %}
-        <form method="POST" class="card flex-between">
-            {% csrf_token %}
-
-            <input type="hidden" name="name" value="{{ food.name }}">
-            <input type="hidden" name="calories" value="{{ food.calories }}">
-            <input type="hidden" name="protein" value="{{ food.protein }}">
-            <input type="hidden" name="carbs" value="{{ food.carbs }}">
-            <input type="hidden" name="fats" value="{{ food.fats }}">
-
-            <div>
-                <strong>
-                    {{ food.name }}
-
-                    {% if forloop.first %}
-                        <span class="tag">⭐ Best</span>
-                    {% elif food.protein > 10 %}
-                        <span class="tag">🔥 High Protein</span>
-                    {% endif %}
-                </strong>
-
-                <p class="stat-sub">
-                    {{ food.calories }} kcal | Protein: {{ food.protein }}g
-                </p>
-            </div>
-
-            <div class="flex">
-                <input type="number" name="quantity" value="100" class="qty">
-
-                <button type="submit" class="btn">
-                    Add
-                </button>
-            </div>
-
-        </form>
-        {% endfor %}
-
-    </div>
-    {% endif %}
-
-    <a href="{% url 'dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
-
+  <div class="quick-label">Quick Add</div>
+  <a href="{% url 'add_food' %}" class="quick-link food">
+    <span>＋</span> Add Food
+  </a>
+  <a href="{% url 'add_workout' %}" class="quick-link workout">
+    <span>＋</span> Add Workout
+  </a>
 </div>
 
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Add Food 🍽️</div>
+      <div class="page-sub">Search and log what you ate today</div>
+    </div>
+    <a href="{% url 'dashboard' %}" class="back-btn">← Dashboard</a>
+  </div>
+
+  <!-- Top stat cards -->
+  <div class="stat-row">
+
+    <!-- Smart Suggestion -->
+    <div class="card suggestion">
+      <div class="card-title">🧠 Smart Suggestion</div>
+
+      {% if protein_remaining > 40 %}
+        <div class="suggestion-text">
+          You need <b>{{ protein_remaining|floatformat:0 }}g more protein</b> today.<br>
+          Try chicken, paneer, or eggs to close the gap.
+        </div>
+      {% elif protein_remaining > 20 %}
+        <div class="suggestion-text">
+          <b>{{ protein_remaining|floatformat:0 }}g protein</b> remaining — eggs, dal, or milk will help.
+        </div>
+      {% elif protein_remaining > 0 %}
+        <div class="suggestion-text">
+          Just <b>{{ protein_remaining|floatformat:0 }}g left</b> — curd or a handful of nuts will do it.
+        </div>
+      {% else %}
+        <div class="suggestion-text done">✓ Protein goal complete. Keep the balance!</div>
+      {% endif %}
+    </div>
+
+    <!-- Protein Progress -->
+    <div class="card">
+      <div class="card-title">💪 Protein Progress</div>
+      <div class="progress-label">
+        <span>Today's intake</span>
+        <span>{{ protein_progress|floatformat:0 }}%</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-fill" style="width: {{ protein_progress }}%;"></div>
+      </div>
+      <div class="progress-pct">
+        {{ protein_progress|floatformat:0 }}<span>% of goal</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Search -->
+  <div class="search-card">
+    <div class="search-label">Search Food Database</div>
+    <form method="POST" id="searchForm">
+      {% csrf_token %}
+      <div class="search-row">
+        <input
+          type="text"
+          name="name"
+          placeholder="e.g. chicken breast, paneer, oats..."
+          value="{{ request.POST.name }}"
+          required
+          class="search-input"
+          id="searchInput"
+        >
+        <button type="submit" id="searchBtn" class="search-btn">
+          <span id="searchIcon">🔍</span>
+          <span id="searchText">Search</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results -->
+  {% if food_options %}
+  <div class="results-header">{{ food_options|length }} result{{ food_options|length|pluralize }} found</div>
+  <div class="results-grid">
+    {% for food in food_options %}
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="name"     value="{{ food.name }}">
+      <input type="hidden" name="calories" value="{{ food.calories }}">
+      <input type="hidden" name="protein"  value="{{ food.protein }}">
+      <input type="hidden" name="carbs"    value="{{ food.carbs }}">
+      <input type="hidden" name="fats"     value="{{ food.fats }}">
+
+      <div class="food-card">
+        <div class="food-info">
+          <div class="food-name">
+            {{ food.name }}
+            {% if forloop.first %}
+              <span class="tag best">⭐ Best</span>
+            {% elif food.protein > 10 %}
+              <span class="tag protein">High Protein</span>
+            {% endif %}
+          </div>
+          <div class="food-meta">
+            <b>{{ food.calories }} kcal</b> · Protein: {{ food.protein }}g · Carbs: {{ food.carbs }}g · Fats: {{ food.fats }}g
+          </div>
+        </div>
+
+        <div class="food-actions">
+          <input type="number" name="quantity" value="100" class="qty-input" min="1">
+          <button type="submit" class="add-btn">Add</button>
+        </div>
+      </div>
+    </form>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div><!-- end .main -->
+
 <script>
-document.getElementById('searchForm').addEventListener('submit', function() {
-    const btn = document.getElementById('searchBtn');
-    btn.innerText = '⏳ Searching...';
-    btn.disabled = true;
+document.getElementById('searchForm').addEventListener('submit', function () {
+  const btn  = document.getElementById('searchBtn');
+  const icon = document.getElementById('searchIcon');
+  const txt  = document.getElementById('searchText');
+  btn.disabled = true;
+  icon.textContent = '⏳';
+  txt.textContent  = 'Searching...';
 });
 </script>
 

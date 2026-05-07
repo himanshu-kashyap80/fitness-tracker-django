@@ -1,128 +1,348 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+<meta charset="UTF-8">
+<title>FitTrack — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<style>
+:root {
+  --orange: #FF6B35;
+  --orange-dim: rgba(255,107,53,0.12);
+  --orange-glow: rgba(255,107,53,0.25);
+  --green: #00D97E;
+  --bg: #0A0B0E;
+  --bg2: #111318;
+  --bg3: #181B22;
+  --bg4: #1F2330;
+  --border: rgba(255,255,255,0.07);
+  --border-focus: rgba(255,107,53,0.5);
+  --text: #F0F2F5;
+  --muted: #7A8090;
+  --muted2: #4A5060;
+  --red: #FF4C6A;
+  --radius: 14px;
+}
 
-        /* CARD */
-        .register-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            padding: 35px;
-            border-radius: 18px;
-            width: 380px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-            text-align: center;
-            transition: 0.3s;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .register-card:hover {
-            transform: translateY(-3px);
-        }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
 
-        /* TITLE */
-        .title {
-            font-size: 26px;
-            font-weight: bold;
-            color: #00e676;
-            margin-bottom: 5px;
-        }
+/* ── BACKGROUND RINGS ── */
+.bg-rings {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
 
-        .subtitle {
-            color: #aaa;
-            margin-bottom: 20px;
-        }
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,107,53,0.07);
+  transform: translate(-50%, -50%);
+  left: 50%; top: 50%;
+  animation: pulse-ring 6s ease-in-out infinite;
+}
 
-        /* INPUT (Django form styling fix) */
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 10px;
-            border: none;
-            background: #1e293b;
-            color: white;
-        }
+.ring:nth-child(1) { width: 400px; height: 400px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 640px; height: 640px; animation-delay: 1s; border-color: rgba(255,107,53,0.045); }
+.ring:nth-child(3) { width: 900px; height: 900px; animation-delay: 2s; border-color: rgba(255,107,53,0.025); }
+.ring:nth-child(4) { width: 1180px; height: 1180px; animation-delay: 3s; border-color: rgba(255,107,53,0.012); }
 
-        input:focus, select:focus {
-            outline: 2px solid #00e676;
-        }
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+}
 
-        /* BUTTON */
-        .btn {
-            margin-top: 15px;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #00e676, #00c853);
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            color: black;
-            cursor: pointer;
-        }
+/* glow blob behind the card */
+.bg-glow {
+  position: fixed;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+/* ── CARD ── */
+.card-wrap {
+  position: relative;
+  z-index: 1;
+  width: 420px;
+  animation: slide-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
-        /* ERROR */
-        .error {
-            background: rgba(255,0,0,0.15);
-            color: #ff6b6b;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-        /* LINK */
-        a {
-            color: #00e676;
-            text-decoration: none;
-        }
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+/* top-right corner accent */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,53,0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── LOGO / HEADER ── */
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.logo-icon {
+  width: 40px; height: 40px;
+  background: var(--orange);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 16px rgba(255,107,53,0.35);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo-text span { color: var(--orange); }
+
+.heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.subheading {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* ── ERROR BOX ── */
+.error-box {
+  background: rgba(255,75,106,0.1);
+  border: 1px solid rgba(255,75,106,0.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── DJANGO FORM OVERRIDE ── */
+/* Django's as_p wraps each field in a <p> with a <label> and <input> */
+form p {
+  margin: 0 0 14px 0;
+}
+
+form label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+
+form input:focus,
+form select:focus {
+  border-color: var(--border-focus);
+  background: var(--bg4);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+form input::placeholder { color: var(--muted2); }
+
+/* field-level errors from Django */
+form ul.errorlist {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+form ul.errorlist li {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 4px;
+}
+
+/* ── SUBMIT BUTTON ── */
+.btn-submit {
+  width: 100%;
+  padding: 13px;
+  background: var(--orange);
+  border: none;
+  border-radius: 11px;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(255,107,53,0.3);
+}
+
+.btn-submit:hover {
+  opacity: 0.93;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(255,107,53,0.4);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+/* ── FOOTER LINK ── */
+.login-link {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-link a {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.login-link a:hover { opacity: 0.8; text-decoration: underline; }
+
+/* ── DIVIDER ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 22px 0;
+}
+
+/* ── STEP PILLS (decorative) ── */
+.step-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.step-pill {
+  height: 4px;
+  border-radius: 2px;
+  flex: 1;
+  background: var(--bg4);
+}
+
+.step-pill.active {
+  background: var(--orange);
+}
+</style>
 </head>
-
 <body>
 
-<div class="register-card">
+<!-- Background -->
+<div class="bg-rings">
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+</div>
+<div class="bg-glow"></div>
 
-    <div class="title">Create Account</div>
-    <div class="subtitle">Start your fitness journey 🚀</div>
+<!-- Card -->
+<div class="card-wrap">
+  <div class="card">
 
-    <!-- 🔴 FORM ERRORS -->
-    {% if form.errors %}
-        <div class="error">
-            Please fix the errors below ❌
-        </div>
-    {% endif %}
-
-    <form method="POST">
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit" class="btn">Register</button>
-    </form>
-
-    <div style="margin-top: 15px;">
-        <a href="{% url 'login' %}">Already have an account? Login</a>
+    <!-- Logo -->
+    <div class="logo-row">
+      <div class="logo-icon">💪</div>
+      <div class="logo-text">Fit<span>Track</span></div>
     </div>
 
+    <!-- Progress decoration -->
+    <div class="step-pills">
+      <div class="step-pill active"></div>
+      <div class="step-pill"></div>
+      <div class="step-pill"></div>
+    </div>
+
+    <div class="heading">Create your account</div>
+    <div class="subheading">Start tracking your fitness journey today 🚀</div>
+
+    <!-- Errors -->
+    {% if form.errors %}
+    <div class="error-box">
+      ⚠ Please fix the errors below before continuing.
+    </div>
+    {% endif %}
+
+    <!-- Form -->
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn-submit">Create Account →</button>
+    </form>
+
+    <hr class="divider">
+
+    <div class="login-link">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </div>
+
+  </div>
 </div>
 
 </body>

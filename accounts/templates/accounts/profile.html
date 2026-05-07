@@ -1,179 +1,656 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Profile</title>
+<meta charset="UTF-8">
+<title>FitTrack — Profile</title>
 
-    <style>
-        body {
-            background: #0f172a;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-        .main {
-            max-width: 700px;
-            margin: auto;
-        }
+<style>
+:root{
+  --orange:#FF6B35;
+  --orange-dim:rgba(255,107,53,0.12);
+  --orange-glow:rgba(255,107,53,0.28);
 
-        /* HEADER */
-        .header h2 {
-            margin-bottom: 5px;
-        }
+  --green:#00D97E;
+  --cyan:#00C8FF;
+  --red:#FF4C6A;
 
-        .header p {
-            color: #aaa;
-            margin-bottom: 20px;
-        }
+  --bg:#0A0B0E;
+  --bg2:#111318;
+  --bg3:#181B22;
+  --bg4:#1F2330;
 
-        /* CARD */
-        .card {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-        }
+  --border:rgba(255,255,255,0.07);
+  --border-hover:rgba(255,107,53,0.28);
 
-        .card:hover {
-            transform: translateY(-3px);
-        }
+  --text:#F0F2F5;
+  --muted:#7A8090;
+  --muted2:#4A5060;
 
-        /* FORM */
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-            color: #ccc;
-        }
+  --sidebar-w:240px;
+  --radius:14px;
+}
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            margin-top: 6px;
-            background: #1e293b;
-            color: white;
-        }
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-        input:focus, select:focus {
-            outline: 2px solid #00e5ff;
-        }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  display:flex;
+}
 
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
+/* ───────── SIDEBAR ───────── */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  padding:28px 16px;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  flex-shrink:0;
+}
 
-        /* BUTTON */
-        .btn {
-            width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            background: linear-gradient(135deg, #00e5ff, #00b0ff);
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            color: black;
-            cursor: pointer;
-        }
+.logo-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:36px;
+  padding:0 8px;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+.logo-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--orange);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  box-shadow:0 4px 14px rgba(255,107,53,0.3);
+}
 
-        /* INFO */
-        .info {
-            margin-bottom: 15px;
-            background: rgba(0,229,255,0.1);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
+.logo-text{
+  font-family:'Syne',sans-serif;
+  font-size:20px;
+  font-weight:800;
+}
 
-        /* NAV */
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+.logo-text span{
+  color:var(--orange);
+}
 
-        .nav a {
-            color: #00e5ff;
-            text-decoration: none;
-            font-size: 14px;
-        }
+.nav-label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--muted2);
+  margin-bottom:6px;
+  padding:0 12px;
+}
 
-        .nav a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  color:var(--muted);
+  text-decoration:none;
+  margin-bottom:4px;
+  border:1px solid transparent;
+  transition:0.2s;
+}
+
+.nav-link:hover{
+  background:var(--bg4);
+  color:var(--text);
+}
+
+.nav-link.active{
+  background:var(--orange-dim);
+  color:var(--orange);
+  border-color:var(--border-hover);
+}
+
+.nav-divider{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:16px 0;
+}
+
+.quick-label{
+  font-size:11px;
+  color:var(--muted2);
+  padding:0 12px;
+  margin-bottom:8px;
+}
+
+.quick-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  transition:0.2s;
+}
+
+.quick-link:hover{
+  background:var(--bg4);
+}
+
+.quick-link.food{
+  color:var(--green);
+}
+
+.quick-link.workout{
+  color:var(--cyan);
+}
+
+/* ───────── MAIN ───────── */
+.main{
+  flex:1;
+  padding:32px 28px;
+  max-width:950px;
+}
+
+/* ───────── HEADER ───────── */
+.page-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-bottom:28px;
+}
+
+.page-title{
+  font-family:'Syne',sans-serif;
+  font-size:28px;
+  font-weight:800;
+}
+
+.page-sub{
+  color:var(--muted);
+  margin-top:5px;
+  font-size:14px;
+}
+
+.header-actions{
+  display:flex;
+  gap:10px;
+}
+
+.action-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 16px;
+  border-radius:10px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  color:var(--muted);
+  text-decoration:none;
+  transition:0.2s;
+  font-size:13px;
+}
+
+.action-btn:hover{
+  border-color:var(--border-hover);
+  color:var(--orange);
+}
+
+/* ───────── TOP CARDS ───────── */
+.stat-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,107,53,0.2);
+}
+
+.card-title{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-bottom:12px;
+  font-family:'Syne',sans-serif;
+}
+
+/* profile card */
+.card.profile{
+  border-left:3px solid var(--orange);
+}
+
+.profile-text{
+  line-height:1.7;
+  font-size:14px;
+}
+
+.profile-text b{
+  color:var(--orange);
+}
+
+/* progress card */
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  margin-bottom:8px;
+  font-size:13px;
+}
+
+.progress-wrap{
+  height:8px;
+  border-radius:100px;
+  background:var(--bg4);
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  width:78%;
+  border-radius:100px;
+  background:var(--green);
+}
+
+.progress-pct{
+  margin-top:10px;
+  font-size:24px;
+  font-weight:800;
+  font-family:'Syne',sans-serif;
+  color:var(--green);
+}
+
+/* ───────── FORM CARD ───────── */
+.form-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+}
+
+.form-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:22px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.form-heading{
+  font-size:22px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+}
+
+.info-badge{
+  background:rgba(0,200,255,0.1);
+  border:1px solid rgba(0,200,255,0.2);
+  color:var(--cyan);
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:500;
+}
+
+/* django form inputs */
+input,
+select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--bg3);
+  color:var(--text);
+  font-size:14px;
+  font-family:'DM Sans',sans-serif;
+  transition:0.2s;
+}
+
+input:focus,
+select:focus{
+  outline:none;
+  border-color:var(--border-hover);
+  background:var(--bg4);
+  box-shadow:0 0 0 3px rgba(255,107,53,0.1);
+}
+
+/* metrics */
+.metric-box{
+  margin-top:20px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+}
+
+.metric-title{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+.metric-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.metric{
+  background:var(--bg4);
+  border-radius:10px;
+  padding:14px;
+  text-align:center;
+}
+
+.metric h4{
+  font-size:22px;
+  color:var(--orange);
+  font-family:'Syne',sans-serif;
+}
+
+.metric p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* button */
+.submit-btn{
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:var(--orange);
+  color:white;
+  font-size:15px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 4px 16px rgba(255,107,53,0.3);
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(255,107,53,0.4);
+}
+
+/* responsive */
+@media(max-width:700px){
+
+  .sidebar{
+    display:none;
+  }
+
+  .main{
+    padding:20px 16px;
+  }
+
+  .stat-row{
+    grid-template-columns:1fr;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .metric-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
+<!-- ───────── SIDEBAR ───────── -->
+<div class="sidebar">
+
+  <div class="logo-row">
+    <div class="logo-icon">💪</div>
+    <div class="logo-text">Fit<span>Track</span></div>
+  </div>
+
+  <div class="nav-label">Menu</div>
+
+  <a href="{% url 'dashboard' %}" class="nav-link">
+    🏠 Dashboard
+  </a>
+
+  <a href="{% url 'add_food' %}" class="nav-link">
+    🍽️ Add Food
+  </a>
+
+  <a href="{% url 'add_workout' %}" class="nav-link">
+    🏋️ Add Workout
+  </a>
+
+  <a href="{% url 'add_stats' %}" class="nav-link">
+    📊 Add Stats
+  </a>
+
+  <a href="{% url 'add_goal' %}" class="nav-link">
+    🎯 Goals
+  </a>
+
+  <a href="{% url 'profile' %}" class="nav-link active">
+    👤 Profile
+  </a>
+
+  <hr class="nav-divider">
+
+  <div class="quick-label">Quick Add</div>
+
+  <a href="{% url 'add_food' %}" class="quick-link food">
+    ➕ Add Food
+  </a>
+
+  <a href="{% url 'add_workout' %}" class="quick-link workout">
+    ➕ Add Workout
+  </a>
+
+</div>
+
+<!-- ───────── MAIN ───────── -->
 <div class="main">
 
-    <!-- NAV -->
-    <div class="nav">
-        <a href="{% url 'dashboard' %}">⬅ Dashboard</a>
-        <a href="{% url 'logout' %}">Logout</a>
+  <!-- HEADER -->
+  <div class="page-header">
+
+    <div>
+      <div class="page-title">Your Profile 👤</div>
+
+      <div class="page-sub">
+        Manage your fitness data and personalize recommendations
+      </div>
     </div>
 
-    <!-- HEADER -->
-    <div class="header">
-        <h2>👤 Your Profile</h2>
-        <p>Manage your personal fitness information</p>
+    <div class="header-actions">
+
+      <a href="{% url 'dashboard' %}" class="action-btn">
+        ← Dashboard
+      </a>
+
+      <a href="{% url 'logout' %}" class="action-btn">
+        🚪 Logout
+      </a>
+
     </div>
 
-    <!-- CARD -->
+  </div>
+
+  <!-- TOP CARDS -->
+  <div class="stat-row">
+
+    <!-- profile insight -->
+    <div class="card profile">
+
+      <div class="card-title">
+        🧠 Smart Insight
+      </div>
+
+      <div class="profile-text">
+        Keeping your profile updated improves calorie tracking, workout accuracy, and <b>AI-based recommendations</b>.
+      </div>
+
+    </div>
+
+    <!-- profile completion -->
     <div class="card">
 
-        <!-- INFO -->
-        <div class="info">
-            💡 Your data helps personalize calorie calculations & recommendations
-        </div>
+      <div class="card-title">
+        📈 Profile Completion
+      </div>
 
-        <form method="POST">
-            {% csrf_token %}
+      <div class="progress-label">
+        <span>Setup progress</span>
+        <span>78%</span>
+      </div>
 
-            <div class="grid">
+      <div class="progress-wrap">
+        <div class="progress-fill"></div>
+      </div>
 
-                <div>
-                    <label>Age</label>
-                    {{ form.age }}
-                </div>
-
-                <div>
-                    <label>Weight (kg)</label>
-                    {{ form.weight }}
-                </div>
-
-                <div>
-                    <label>Height (cm)</label>
-                    {{ form.height }}
-                </div>
-
-                <div>
-                    <label>Goal</label>
-                    {{ form.goal }}
-                </div>
-
-                <div style="grid-column: span 2;">
-                    <label>Activity Level</label>
-                    {{ form.activity_level }}
-                </div>
-
-            </div>
-
-            <button type="submit" class="btn">Save Profile</button>
-        </form>
+      <div class="progress-pct">
+        78%
+      </div>
 
     </div>
+
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+
+    <div class="form-top">
+
+      <div class="form-heading">
+        Personal Information
+      </div>
+
+      <div class="info-badge">
+        🔒 Your data stays private & secure
+      </div>
+
+    </div>
+
+    <form method="POST">
+
+      {% csrf_token %}
+
+      <div class="grid">
+
+        <div>
+          <label>Age</label>
+          {{ form.age }}
+        </div>
+
+        <div>
+          <label>Weight (kg)</label>
+          {{ form.weight }}
+        </div>
+
+        <div>
+          <label>Height (cm)</label>
+          {{ form.height }}
+        </div>
+
+        <div>
+          <label>Goal</label>
+          {{ form.goal }}
+        </div>
+
+        <div class="full">
+          <label>Activity Level</label>
+          {{ form.activity_level }}
+        </div>
+
+      </div>
+
+      <!-- metrics -->
+      <div class="metric-box">
+
+        <div class="metric-title">
+          Why Profile Data Matters
+        </div>
+
+        <div class="metric-grid">
+
+          <div class="metric">
+            <h4>🔥</h4>
+            <p>Calories</p>
+          </div>
+
+          <div class="metric">
+            <h4>💪</h4>
+            <p>Workout Plans</p>
+          </div>
+
+          <div class="metric">
+            <h4>🥗</h4>
+            <p>Nutrition Goals</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <button type="submit" class="submit-btn">
+        Save Profile
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
 
